@@ -133,6 +133,10 @@ export async function getSurveySessions(surveyUUID: string, filter: string) {
   return await get(`/app/surveys/${surveyUUID}/sessions?${filter}`)
 }
 
+export async function getSurveyAnalytics(surveyUUID: string) {
+  return await get(`/app/surveys/${surveyUUID}/analytics`)
+}
+
 export async function updateSurvey(surveyUUID: string, payload: object) {
   return await patch(`/app/surveys/${surveyUUID}`, payload)
 }
