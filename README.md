@@ -306,15 +306,15 @@ Where `{SURVEY_ID}` id the UUID of a given survey.
 
 ## Installation & Deployment
 
-### API and Postgres with Docker Compose
+### API, UI and Postgres with Docker Compose
 
-You can build and run both API and Postgres with Docker Compose:
+You can build and run the full stack with Docker Compose:
 
 ```
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
-API will be available at `http://localhost:9900`.
+UI will be available at `http://localhost:8080` and API at `http://localhost:9900`. The UI is served by nginx, which also proxies `/api/*` requests to the API service.
 
 Environment variables:
 
@@ -336,7 +336,7 @@ UI will be available at `http://localhost:5173`.
 
 ### Run API locally
 
-Assuming you have Postgres running locally (`docker-compose up -d postgres`), you can run the API with:
+Assuming you have Postgres running locally (`docker compose up -d postgres`), you can run the API with:
 
 ```
 cd api
