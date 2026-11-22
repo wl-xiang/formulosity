@@ -1,0 +1,11 @@
+variables:
+  - id: department-focus-options
+    type: list
+    options:
+      - 工作成就感
+      - 团队协作氛围
+      - 薪酬与福利
+      - 成长与晋升机会
+      - 工作与生活平衡
+      - 管理透明度
+      - 资源与工具支持

@@ -1,0 +1,236 @@
+questions:
+  # ---------- 基本信息 ----------
+  - id: department
+    type: short-text
+    label: 您所在的部门是？
+    description: 请填写您当前所属的部门名称。
+    validation:
+      min: 2
+      max: 50
+
+  - id: tenure
+    type: single-choice
+    label: 您在现部门的工作年限是？
+    options:
+      - 不足1年
+      - 1-3年
+      - 3-5年
+      - 5-10年
+      - 10年以上
+
+  - id: role
+    type: single-choice
+    label: 您的岗位类型更接近以下哪一类？
+    options:
+      - 管理岗
+      - 专业/技术岗
+      - 运营/支持岗
+      - 其他
+
+  # ---------- 总体满意度 ----------
+  - id: overall_satisfaction
+    type: rating
+    label: 总体而言，您对当前部门工作的满意程度如何？
+    description: 1分表示非常不满意，5分表示非常满意。
+    min: 1
+    max: 5
+
+  - id: satisfied_aspects
+    type: multiple-choice
+    label: 以下哪些方面最让您满意？
+    description: 请选择1至3项。
+    validation:
+      min: 1
+      max: 3
+    options:
+      - 团队氛围
+      - 工作内容与价值感
+      - 成长与学习机会
+      - 薪酬与福利
+      - 管理方式
+      - 工作与生活平衡
+      - 办公环境
+      - 资源与工具支持
+
+  - id: priority_ranking
+    type: ranking
+    label: 请按对您的重要程度，对以下方面进行排序
+    description: 拖动选项调整顺序，排在越前表示越重要。
+    optionsFromVariable: department-focus-options
+
+  # ---------- 工作量与平衡 ----------
+  - id: workload
+    type: rating
+    label: 您认为当前的工作量是否合理？
+    description: 1分表示非常不合理，5分表示非常合理。
+    min: 1
+    max: 5
+
+  - id: improvement_detail
+    type: long-text
+    label: 您对{{ department }}整体工作改进有哪些具体建议？
+    description: 请结合日常工作中的实际感受，尽量具体描述。
+    validation:
+      min: 10
+      max: 500
+    visible_if:
+      all:
+        - question: overall_satisfaction
+          less_than_or_equal: 3
+        - question: workload
+          greater_than_or_equal: 4
+
+  - id: overtime_frequency
+    type: single-choice
+    label: 过去一个月，您平均每周加班的情况是？
+    options:
+      - 几乎不加班
+      - 每周1-2次
+      - 每周3-4次
+      - 几乎每天加班
+
+  - id: work_life_balance
+    type: yes-no
+    label: 您认为当前的工作与生活平衡是否合理？
+
+  - id: balance_detail
+    type: long-text
+    label: 请具体说明工作与生活失衡的原因，以及您期望的改善方式。
+    validation:
+      min: 10
+      max: 500
+    visible_if:
+      question: work_life_balance
+      equals: false
+
+  # ---------- 沟通与协作 ----------
+  - id: communication
+    type: rating
+    label: 您如何评价部门内部的沟通效率？
+    description: 1分表示非常低效，5分表示非常高效。
+    min: 1
+    max: 5
+
+  - id: collaboration_issues
+    type: multiple-choice
+    label: 日常协作中，您主要遇到哪些问题？
+    description: 可多选；若未遇到明显问题，请选择“暂无明显问题”。
+    validation:
+      min: 1
+      max: 4
+    options:
+      - 跨部门协作不畅
+      - 职责边界不清
+      - 信息传递不及时
+      - 会议过多或效率低
+      - 决策流程冗长
+      - 暂无明显问题
+
+  - id: cross_team_detail
+    type: long-text
+    label: 请描述跨部门协作不畅的具体场景，并给出您的建议。
+    validation:
+      min: 10
+      max: 500
+    visible_if:
+      question: collaboration_issues
+      contains: 跨部门协作不畅
+
+  # ---------- 管理与认可 ----------
+  - id: manager_support
+    type: rating
+    label: 您如何评价直属上级给予的支持与指导？
+    description: 1分表示非常不满意，5分表示非常满意。
+    min: 1
+    max: 5
+
+  - id: recognition
+    type: yes-no
+    label: 您的工作成果是否得到了及时认可？
+
+  - id: recognition_feedback
+    type: short-text
+    label: 请为{{ department }}的认可与激励机制提出改进建议。
+    validation:
+      min: 5
+      max: 100
+    visible_if:
+      question: recognition
+      equals: false
+
+  # ---------- 成长与发展 ----------
+  - id: growth
+    type: rating
+    label: 您如何评价部门提供的成长与晋升机会？
+    description: 1分表示非常不满意，5分表示非常满意。
+    min: 1
+    max: 5
+
+  - id: support_needed
+    type: multiple-choice
+    label: 您希望部门在哪些方面提供更多支持？
+    description: 最多选择3项。
+    validation:
+      min: 1
+      max: 3
+    options:
+      - 专业技能培训
+      - 管理能力培训
+      - 项目资源投入
+      - 职业发展辅导
+      - 跨部门轮岗机会
+      - 弹性工作安排
+
+  - id: training_date
+    type: date
+    label: 您最近一次参加部门组织的培训是在什么时候？
+
+  - id: career_expectation
+    type: long-text
+    label: 请描述您未来1-2年的职业发展期望。
+    validation:
+      min: 10
+      max: 500
+
+  # ---------- 流程与改进 ----------
+  - id: process_efficiency
+    type: rating
+    label: 您如何评价当前部门的工作流程效率？
+    description: 1分表示非常低效，5分表示非常高效。
+    min: 1
+    max: 5
+
+  - id: process_suggestion
+    type: long-text
+    label: 针对流程优化，您有什么具体建议？
+    validation:
+      min: 10
+      max: 500
+
+  - id: improvement_timeline
+    type: date
+    label: 您希望看到改进措施在什么时间前落地？
+    description: 请选择一个您认为合理的日期。
+
+  # ---------- 附件与后续联系 ----------
+  - id: attachment
+    type: file
+    label: 如有相关材料或数据，请上传附件（选填）
+    validation:
+      formats:
+        - .pdf
+        - .docx
+        - .xlsx
+        - .png
+      max_size_bytes: 5*1024*1024 # 5 MB
+
+  - id: contact_consent
+    type: yes-no
+    label: 您是否愿意接受后续的访谈或反馈沟通？
+
+  - id: contact_email
+    type: email
+    label: 请留下您的邮箱，方便我们与您联系。
+    visible_if:
+      question: contact_consent
+      equals: true
