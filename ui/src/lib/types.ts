@@ -117,3 +117,69 @@ export type SurveyQuestionAnswer = {
 export type SurveyQuestionAnswerData = {
   value: string[] | string | number | boolean
 }
+
+export type SurveyAnalytics = {
+  survey_uuid: string
+  survey_name: string
+  survey_title: string
+  generated_at: string
+  totals: AnalyticsTotals
+  timeline: AnalyticsTimelinePoint[]
+  questions: QuestionAnalytics[]
+}
+
+export type AnalyticsTotals = {
+  sessions_total: number
+  sessions_completed: number
+  sessions_in_progress: number
+  completion_rate: number
+  average_completion_seconds?: number
+}
+
+export type AnalyticsTimelinePoint = {
+  date: string
+  started: number
+  completed: number
+}
+
+export type AnalyticsChartKind =
+  | 'single_choice'
+  | 'multi_choice'
+  | 'boolean'
+  | 'rating'
+  | 'ranking'
+  | 'date'
+
+export type AnalyticsBucket = {
+  key: string
+  label: string
+  count: number
+  percentage: number
+}
+
+export type AnalyticsRankingOption = {
+  key: string
+  label: string
+  rank_counts: number[]
+  average_rank?: number
+}
+
+export type AnalyticsNumericSummary = {
+  average?: number
+  median?: number
+  mode?: number
+}
+
+export type QuestionAnalytics = {
+  question_uuid: string
+  question_id: string
+  label: string
+  type: SurveyQuestionType
+  chart_kind: AnalyticsChartKind
+  conditional: boolean
+  answered_count: number
+  buckets?: AnalyticsBucket[]
+  ranking?: AnalyticsRankingOption[]
+  numeric_summary?: AnalyticsNumericSummary
+  granularity?: 'day' | 'month' | 'year'
+}

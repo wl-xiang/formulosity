@@ -1,23 +1,22 @@
 <template>
-  <SurveyLayout 
-    :surveyTheme="survey?.config?.theme" 
-    :urlSlug="survey?.url_slug"
-  >
-    <div v-if="loading">Loading...</div>
+  <SurveyLayout :survey-theme="survey?.config?.theme" :url-slug="survey?.url_slug">
+    <div v-if="loading">{{ t('survey.loading') }}</div>
     <SurveyNotFound v-else-if="notFound || !survey" />
     <SurveyForm v-else :survey="survey" />
   </SurveyLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { getSurvey } from '@/lib/api'
 import type { Survey } from '@/lib/types'
 import SurveyLayout from '@/components/app/survey/SurveyLayout.vue'
 import SurveyNotFound from '@/components/app/survey/SurveyNotFound.vue'
 import SurveyForm from '@/components/app/survey/SurveyForm.vue'
 
+const { t } = useI18n()
 const route = useRoute()
 
 const survey = ref<Survey | null>(null)
@@ -30,11 +29,7 @@ onMounted(async () => {
 
   const surveyResp = await getSurvey(urlSlug)
 
-  if (
-    surveyResp.error ||
-    !surveyResp.data.data ||
-    !surveyResp.data.data.config
-  ) {
+  if (surveyResp.error || !surveyResp.data.data || !surveyResp.data.data.config) {
     notFound.value = true
   } else {
     survey.value = surveyResp.data.data as Survey

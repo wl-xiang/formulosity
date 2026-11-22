@@ -1,4 +1,4 @@
-/* Simplified light-only theme */
+/* Base color variables. Tailwind utilities handle light/dark themes. */
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;

@@ -3,22 +3,24 @@
     <SurveyFooter :survey="survey" :session="localSession" />
   </div>
   <div v-else-if="!currentQuestion">
-    <div class="completion-message text-center py-8">
-      <h2 class="h2 text-gray-300">No more questions found in the survey.</h2>
+    <div class="completion-message py-8 text-center">
+      <h2 class="h2 text-gray-900 dark:text-gray-300">{{ t('survey.noMoreQuestions') }}</h2>
       <div class="mt-6">
-        <button 
+        <button
+          class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           @click="tryAgain"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >
-          Try again
+          {{ t('survey.tryAgain') }}
         </button>
       </div>
     </div>
   </div>
   <div v-else-if="currentQuestion">
     <div class="question-container">
-      <h2 class="h2 text-gray-300">{{ renderedText(currentQuestion.label) }}</h2>
-      <p v-if="currentQuestion.description" class="text-gray-300 mb-6">{{ renderedText(currentQuestion.description) }}</p>
+      <h2 class="h2 text-gray-900 dark:text-gray-300">{{ renderedText(currentQuestion.label) }}</h2>
+      <p v-if="currentQuestion.description" class="mb-6 text-gray-600 dark:text-gray-300">
+        {{ renderedText(currentQuestion.description) }}
+      </p>
       
       <!-- Single Choice -->
       <div v-if="currentQuestion.type === SurveyQuestionType.SingleChoice" class="space-y-3">
@@ -31,7 +33,7 @@
             v-model="answerValue"
             class="mr-3 text-blue-600 focus:ring-blue-500"
           />
-          <label :for="option" class="text-gray-300">{{ renderedOption(option) }}</label>
+          <label :for="option" class="text-gray-700 dark:text-gray-300">{{ renderedOption(option) }}</label>
         </div>
       </div>
 
@@ -45,7 +47,7 @@
             v-model="answerValue"
             class="mr-3 text-blue-600 focus:ring-blue-500 rounded"
           />
-          <label :for="option" class="text-gray-300">{{ renderedOption(option) }}</label>
+          <label :for="option" class="text-gray-700 dark:text-gray-300">{{ renderedOption(option) }}</label>
         </div>
       </div>
 
@@ -54,7 +56,7 @@
         <input 
           type="text"
           v-model="answerValue"
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+          class="w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
         />
       </div>
 
@@ -62,7 +64,7 @@
       <div v-else-if="currentQuestion.type === SurveyQuestionType.LongText">
         <textarea 
           v-model="answerValue"
-          class="w-full p-3 border border-gray-300 rounded-lg h-32 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+          class="h-32 w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
         ></textarea>
       </div>
 
@@ -71,7 +73,7 @@
         <input 
           type="email"
           v-model="answerValue"
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+          class="w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
         />
       </div>
 
@@ -80,7 +82,7 @@
         <input 
           type="date"
           v-model="answerValue"
-          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+          class="w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
         />
       </div>
 
@@ -95,7 +97,7 @@
             v-model="answerValue"
             class="mr-3 text-blue-600 focus:ring-blue-500"
           />
-          <label for="yes" class="text-gray-300">Yes</label>
+          <label for="yes" class="text-gray-700 dark:text-gray-300">{{ t('survey.yes') }}</label>
         </div>
         <div class="flex items-center">
           <input 
@@ -106,7 +108,7 @@
             v-model="answerValue"
             class="mr-3 text-blue-600 focus:ring-blue-500"
           />
-          <label for="no" class="text-gray-300">No</label>
+          <label for="no" class="text-gray-700 dark:text-gray-300">{{ t('survey.no') }}</label>
         </div>
       </div>
 
@@ -115,7 +117,11 @@
         <span v-for="i in (currentQuestion.max || 5)" :key="i" class="cursor-pointer text-2xl select-none">
           <Icon 
             icon="heroicons:star-solid"
-            :class="[i <= Number(answerValue) ? 'text-yellow-400' : 'text-gray-300']"
+            :class="[
+              i <= Number(answerValue)
+                ? 'text-yellow-400'
+                : 'text-gray-300 dark:text-gray-600',
+            ]"
             @click="answerValue = i.toString()"
           />
         </span>
@@ -123,7 +129,7 @@
 
       <!-- Ranking -->
       <div v-else-if="currentQuestion.type === SurveyQuestionType.Ranking" class="space-y-4">
-        <p class="text-gray-300 text-sm">Drag and drop items below to rank them.</p>
+        <p class="text-sm text-gray-600 dark:text-gray-300">{{ t('survey.dragToRank') }}</p>
         <div class="space-y-2">
           <div 
             v-for="(item, index) in sortableItems" 
@@ -133,31 +139,31 @@
             @dragover.prevent
             @drop="onDrop(index)"
             @dragenter.prevent
-            class="flex items-center p-3 bg-gray-100 border border-gray-300 rounded-lg cursor-move hover:bg-gray-200 transition-colors"
+            class="flex cursor-move items-center rounded-lg border border-gray-300 bg-gray-100 p-3 transition-colors hover:bg-gray-200 dark:border-gray-700 dark:bg-white/10 dark:hover:bg-white/20"
             :class="{ 'opacity-50': draggedIndex === index }"
           >
-            <Icon icon="heroicons:bars-3" class="w-5 h-5 text-gray-500 mr-3" />
-            <span class="text-gray-900">{{ item.name }}</span>
+            <Icon icon="heroicons:bars-3" class="mr-3 h-5 w-5 text-gray-500 dark:text-gray-400" />
+            <span class="text-gray-900 dark:text-gray-100">{{ item.name }}</span>
           </div>
         </div>
       </div>
 
       <div class="mt-6 flex gap-3">
-        <button 
+        <button
           v-if="prevQuestion"
+          class="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-gray-700 hover:bg-gray-200 dark:bg-white/10 dark:text-gray-200 dark:hover:bg-white/20"
           @click="goToPrev"
-          class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
         >
-          <Icon icon="heroicons:arrow-left" class="w-4 h-4" />
-          Previous
+          <Icon icon="heroicons:arrow-left" class="h-4 w-4" />
+          {{ t('survey.previous') }}
         </button>
-        <button 
-          @click="submitAnswer"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        <button
           :disabled="!canSubmit"
+          class="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+          @click="submitAnswer"
         >
-          {{ nextQuestion ? 'Next' : 'Complete' }}
-          <Icon icon="heroicons:arrow-right" class="w-4 h-4" />
+          {{ nextQuestion ? t('survey.next') : t('survey.complete') }}
+          <Icon icon="heroicons:arrow-right" class="h-4 w-4" />
         </button>
       </div>
 
@@ -168,6 +174,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Icon } from '@iconify/vue'
 import {
   SurveyQuestionType,
@@ -179,6 +186,7 @@ import type {
   SurveyQuestion,
 } from '@/lib/types'
 import { submitQuestionAnswer } from '@/lib/api'
+import { translateApiError } from '@/lib/errors'
 import ErrCode from '@/components/ui/ErrCode.vue'
 import SurveyFooter from './SurveyFooter.vue'
 import { answersFor, clearHiddenAnswers, interpolateText } from '@/lib/questions'
@@ -199,6 +207,8 @@ interface SortableItem {
 }
 
 const props = defineProps<Props>()
+
+const { t } = useI18n()
 
 const initialQuestion = determineInitialQuestion(props.survey, props.session)
 const currentQuestion = ref<SurveyQuestion | undefined>(initialQuestion)
@@ -315,12 +325,7 @@ async function submitAnswer() {
   )
 
   if (res.error) {
-    // Check if we have detailed error information
-    if (res.data && res.data.error_details) {
-      errMessage.value = res.data.error_details
-    } else {
-      errMessage.value = res.error
-    }
+    errMessage.value = translateApiError(res.data?.error_details || res.error)
     return
   }
 

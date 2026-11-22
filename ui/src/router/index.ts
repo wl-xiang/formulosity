@@ -22,6 +22,11 @@ const router = createRouter({
       component: SurveyResponsesView,
     },
     {
+      path: '/app/surveys/:surveyUuid/analytics',
+      name: 'surveyAnalytics',
+      component: () => import('../views/SurveyAnalyticsView.vue'),
+    },
+    {
       path: '/',
       redirect: '/app',
     },

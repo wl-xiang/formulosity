@@ -1,12 +1,13 @@
 <template>
-  <div class="completion-message text-center py-8">
-    <h2 class="h2 text-gray-300">Thank you for completing the survey!</h2>
-    <p v-if="config.outro" class="mt-4 text-gray-300" v-html="formatOutro(config.outro)"></p>
+  <div class="completion-message py-8 text-center">
+    <h2 class="h2 text-gray-900 dark:text-gray-300">{{ t('survey.thankYou') }}</h2>
+    <p v-if="config.outro" class="mt-4 text-gray-600 dark:text-gray-300" v-html="formatOutro(config.outro)"></p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { Survey, SurveyConfig, SurveySession } from '@/lib/types'
 import { answersFor, interpolateText } from '@/lib/questions'
 
@@ -17,6 +18,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const { t } = useI18n()
 const config = computed(() => props.survey.config as SurveyConfig)
 
 function formatOutro(outro: string): string {
