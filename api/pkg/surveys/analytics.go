@@ -12,6 +12,7 @@ import (
 )
 
 const analyticsMaxSessions = 1000000
+const maxRatingBuckets = 1000
 
 // GetSurveyAnalytics loads sessions and builds the aggregated analytics payload.
 func GetSurveyAnalytics(svc services.Services, survey types.Survey) (*types.SurveyAnalytics, error) {
@@ -268,7 +269,7 @@ func analyzeRating(
 ) {
 	counts := map[int]int{}
 	values := []int{}
-	sum := 0
+	var sum float64
 
 	for i := range sessions {
 		value, ok := answerNumberValue(sessions[i], question.UUID)
@@ -279,7 +280,7 @@ func analyzeRating(
 		rating := int(math.Round(value))
 		counts[rating]++
 		values = append(values, rating)
-		sum += rating
+		sum += float64(rating)
 	}
 
 	analytics.AnsweredCount = len(values)
@@ -288,10 +289,29 @@ func analyzeRating(
 	}
 
 	minValue, maxValue := ratingRange(question, values)
-	buckets := make([]types.AnalyticsBucket, 0, maxValue-minValue+1)
-	for value := minValue; value <= maxValue; value++ {
-		label := strconv.Itoa(value)
-		buckets = append(buckets, newBucket(label, label, counts[value], analytics.AnsweredCount))
+	span := int64(maxValue) - int64(minValue) + 1
+	useObservedOnly := span <= 0 || span > maxRatingBuckets
+	bucketCount := int(span)
+	if useObservedOnly {
+		bucketCount = len(counts)
+	}
+	buckets := make([]types.AnalyticsBucket, 0, bucketCount)
+	if useObservedOnly {
+		observed := make([]int, 0, len(counts))
+		for value := range counts {
+			observed = append(observed, value)
+		}
+		sort.Ints(observed)
+
+		for _, value := range observed {
+			label := strconv.Itoa(value)
+			buckets = append(buckets, newBucket(label, label, counts[value], analytics.AnsweredCount))
+		}
+	} else {
+		for value := int64(minValue); value <= int64(maxValue); value++ {
+			label := strconv.FormatInt(value, 10)
+			buckets = append(buckets, newBucket(label, label, counts[int(value)], analytics.AnsweredCount))
+		}
 	}
 
 	sort.Ints(values)
@@ -498,14 +518,25 @@ func answerStringSliceValue(session types.SurveySession, questionUUID string) ([
 
 	switch typed := value.(type) {
 	case []string:
-		return typed, len(typed) > 0
+		values := make([]string, 0, len(typed))
+		for _, item := range typed {
+			text := strings.TrimSpace(item)
+			if text != "" {
+				values = append(values, text)
+			}
+		}
+		return values, len(values) > 0
 	case []any:
 		values := make([]string, 0, len(typed))
 		for _, item := range typed {
 			if item == nil {
 				continue
 			}
-			values = append(values, strings.TrimSpace(stringValue(item)))
+			text := strings.TrimSpace(stringValue(item))
+			if text == "" {
+				continue
+			}
+			values = append(values, text)
 		}
 		return values, len(values) > 0
 	default:

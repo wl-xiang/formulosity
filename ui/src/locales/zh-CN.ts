@@ -79,6 +79,7 @@ const zhCN: MessageSchema = {
     exportFileName: 'survey_responses.json',
   },
   surveyTabs: {
+    label: '问卷导航',
     responses: '答卷',
     analytics: '数据分析',
   },

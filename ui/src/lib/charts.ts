@@ -41,7 +41,11 @@ function dateBucketLabel(key: string, granularity?: string): string {
     return formatDate(key, { year: 'numeric', month: 'short' })
   }
 
-  return formatDate(key, { month: 'short', day: 'numeric' })
+  return formatDate(key, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  })
 }
 
 export function bucketDisplayLabel(
@@ -66,6 +70,11 @@ export function buildTimelineOption(
   labels: Pick<ChartLabels, 'started' | 'completed'>,
 ): EChartsOption {
   const colors = chartColors(theme)
+  const spansMultipleYears =
+    new Set(points.map((point) => point.date.slice(0, 4))).size > 1
+  const dateOptions: Intl.DateTimeFormatOptions = spansMultipleYears
+    ? { year: 'numeric', month: 'short', day: 'numeric' }
+    : { month: 'short', day: 'numeric' }
 
   return {
     color: [colors.palette[0], colors.palette[1]],
@@ -86,7 +95,7 @@ export function buildTimelineOption(
     },
     xAxis: {
       type: 'category',
-      data: points.map((point) => formatDate(point.date, { month: 'short', day: 'numeric' })),
+      data: points.map((point) => formatDate(point.date, dateOptions)),
       axisLabel: { color: colors.muted, hideOverlap: true },
       axisLine: { lineStyle: { color: colors.axis } },
       axisTick: { show: false },

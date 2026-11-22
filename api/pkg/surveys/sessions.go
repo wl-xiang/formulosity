@@ -97,6 +97,10 @@ func DeleteSurveySession(svc services.Services, survey types.Survey, sessionUUID
 }
 
 func filterVisibleAnswers(survey *types.Survey, session *types.SurveySession) error {
+	if survey == nil || survey.Config == nil || survey.Config.Questions == nil || session == nil {
+		return nil
+	}
+
 	// Index persisted answers first, then walk questions in declaration order.
 	// Removing a hidden answer from answers before evaluating later questions is
 	// essential for chains such as A -> B -> C: C must not remain visible just
@@ -152,6 +156,10 @@ func sessionAnswerValues(survey *types.Survey, session *types.SurveySession) (ma
 }
 
 func convertAnswerBytesToAnswerType(svc services.Services, survey *types.Survey, answers []types.QuestionAnswer) []types.QuestionAnswer {
+	if survey == nil || survey.Config == nil || survey.Config.Questions == nil {
+		return answers
+	}
+
 	for i, a := range answers {
 		for _, q := range survey.Config.Questions.Questions {
 			if q.UUID == a.QuestionUUID {

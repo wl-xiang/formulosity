@@ -349,7 +349,9 @@ async function deleteSession(session: SurveySession) {
   const deleteResp = await deleteSurveySession(survey.value.uuid, session.uuid)
 
   if (deleteResp.error) {
-    errorMsg.value = translateApiError(deleteResp.error)
+    errorMsg.value = translateApiError(
+      deleteResp.data?.error_details || deleteResp.error,
+    )
   } else {
     await fetchResponses(1, sortByField.value, sortOrder.value)
     currentPage.value = 1

@@ -9,7 +9,9 @@
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
           {{ t('analytics.title') }}
         </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400">{{ analytics.survey_name }}</p>
+        <p class="text-lg text-gray-600 dark:text-gray-400">
+          {{ analytics.survey_title || analytics.survey_name }}
+        </p>
         <p class="app-muted text-sm">{{ t('analytics.subtitle') }}</p>
       </div>
 
@@ -29,7 +31,7 @@
         <StatCard
           :label="t('analytics.cards.completionRate')"
           :value="formatPercent(analytics.totals.completion_rate)"
-          :hint="`${analytics.totals.sessions_completed} / ${analytics.totals.sessions_total}`"
+          :hint="`${formatNumber(analytics.totals.sessions_completed)} / ${formatNumber(analytics.totals.sessions_total)}`"
         />
         <StatCard
           :label="t('analytics.cards.averageCompletionTime')"

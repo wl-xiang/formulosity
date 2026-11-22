@@ -49,7 +49,9 @@ async function startSurvey() {
   errMessage.value = undefined
   const sessionRes = await createSurveySession(props.survey.url_slug)
   if (sessionRes.error) {
-    errMessage.value = translateApiError(sessionRes.error)
+    errMessage.value = translateApiError(
+      sessionRes.data?.error_details || sessionRes.error,
+    )
     return
   }
 

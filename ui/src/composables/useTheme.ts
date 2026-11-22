@@ -5,7 +5,7 @@ export type ResolvedTheme = 'light' | 'dark'
 
 const STORAGE_KEY = 'formulosity_theme'
 const mediaQuery =
-  typeof window !== 'undefined'
+  typeof window !== 'undefined' && typeof window.matchMedia === 'function'
     ? window.matchMedia('(prefers-color-scheme: dark)')
     : null
 

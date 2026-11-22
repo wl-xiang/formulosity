@@ -93,6 +93,7 @@ import type { Survey } from '@/lib/types'
 import { SurveyDeliveryStatus, SurveyParseStatus } from '@/lib/types'
 import { updateSurvey } from '@/lib/api'
 import { formatDate, formatPercent } from '@/lib/format'
+import { translateApiError } from '@/lib/errors'
 import ErrCode from '@/components/ui/ErrCode.vue'
 
 const { t } = useI18n()
@@ -131,7 +132,7 @@ async function updateSurveyStatus(surveyUUID: string, status: string) {
   })
 
   if (res.error) {
-    errorMsg.value = res.error
+    errorMsg.value = translateApiError(res.data?.error_details || res.error)
   } else {
     window.location.href = '/app'
   }

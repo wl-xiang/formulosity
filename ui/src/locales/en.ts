@@ -77,6 +77,7 @@ const en = {
     exportFileName: 'survey_responses.json',
   },
   surveyTabs: {
+    label: 'Survey sections',
     responses: 'Responses',
     analytics: 'Analytics',
   },

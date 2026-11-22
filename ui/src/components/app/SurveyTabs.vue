@@ -1,7 +1,7 @@
 <template>
   <nav
     class="flex items-center gap-1 border-b border-gray-200 dark:border-white/10"
-    :aria-label="t('surveyTabs.responses')"
+    :aria-label="t('surveyTabs.label')"
   >
     <router-link
       :to="`/app/surveys/${surveyUuid}/responses`"

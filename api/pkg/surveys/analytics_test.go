@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/plutov/formulosity/api/pkg/services"
 	"github.com/plutov/formulosity/api/pkg/types"
 )
 
@@ -264,6 +265,35 @@ func TestBuildSurveyAnalyticsEmpty(t *testing.T) {
 		if question.AnsweredCount != 0 {
 			t.Fatalf("expected 0 answers for %s, got %d", question.QuestionID, question.AnsweredCount)
 		}
+	}
+}
+
+func TestBuildSurveyAnalyticsNilConfig(t *testing.T) {
+	survey := types.Survey{UUID: "survey-empty", Name: "empty"}
+
+	analytics := BuildSurveyAnalytics(&survey, []types.SurveySession{})
+	if analytics.SurveyUUID != survey.UUID {
+		t.Fatalf("expected survey UUID %s, got %s", survey.UUID, analytics.SurveyUUID)
+	}
+	if len(analytics.Questions) != 0 {
+		t.Fatalf("expected no questions for nil config, got %d", len(analytics.Questions))
+	}
+}
+
+func TestAnswerConversionHandlesNilConfig(t *testing.T) {
+	survey := types.Survey{UUID: "survey-empty", Name: "empty"}
+	answers := []types.QuestionAnswer{
+		{QuestionID: "name", QuestionUUID: "q-name", AnswerBytes: []byte(`{"value":"Alice"}`)},
+	}
+
+	converted := convertAnswerBytesToAnswerType(services.Services{}, &survey, answers)
+	if len(converted) != len(answers) {
+		t.Fatalf("expected %d answers, got %d", len(answers), len(converted))
+	}
+
+	session := types.SurveySession{QuestionAnswers: converted}
+	if err := filterVisibleAnswers(&survey, &session); err != nil {
+		t.Fatalf("expected nil config filtering to succeed, got %v", err)
 	}
 }
 

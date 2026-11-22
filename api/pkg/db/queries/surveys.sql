@@ -121,7 +121,7 @@ UPDATE
     surveys_sessions
 SET
     status = $1,
-    completed_at = NOW()
+    completed_at = now() at time zone 'utc'
 WHERE
     uuid = $2;
 
